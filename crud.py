@@ -12,12 +12,12 @@ def insert_movie(conn, tt, title, year):
     sql = 'select * from movie where tt = %s'
     curs.execute(sql,[tt])
     result = curs.fetchone()
-    print (result)
+    
     if result:  
         flash("Cannot insert movie, ID already exist in database")
     else:
-        sql = 'insert into movie (tt, title, release,addedby) values (%s, 10027)'
-        curs.execute(sql,[tt, title, year])
+        sql = 'insert into movie (tt, title, `release`,addedby) values (%s,%s, %s, %s)'
+        curs.execute(sql,[tt, title, year, 10027])
     sql_select = 'select * from movie where tt = %s'
     curs.execute(sql_select, [tt])
     return curs.fetchone()

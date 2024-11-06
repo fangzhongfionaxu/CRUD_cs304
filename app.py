@@ -56,6 +56,8 @@ def insert():
         return render_template('insert.html',
                                page_title='Insert movie')
     elif request.method == 'POST':
+        #i
+
         #if tt exist in db, then flash
         #else insert new movie to db
         
@@ -63,6 +65,21 @@ def insert():
         movie_id = request.form['movie-tt']
         movie_title = request.form['movie-title']
         release_year = request.form['movie-release']
+        print("test")
+        print(movie_title)
+        
+        #if the three variables are not none, then continue, 
+        # if are, flash and return insert template
+        if movie_id =="" :
+            flash("missing input: movie_id")
+        if movie_title=="" :
+            flash("missing input: movie_title")
+        if release_year == "":
+            flash("missing input: release_year")
+        if movie_id == "" or movie_title== ""or release_year == "":
+            render_template('insert.html',
+                               page_title='Insert movie')
+
         result = c.insert_movie(conn, movie_id, movie_title, release_year)
         #select * from movie where tt = movie_id
         title = result["title"]
@@ -71,7 +88,7 @@ def insert():
         addedby = result["addedby"]
         director_id = result["director"]
 
-        return redirect(url_for('update'),title= title, movie_id = movie_id, release_year = release_year, addedby =addedby, director_id= director_id)
+        return redirect(url_for('update',title= title, movie_id = movie_id, release_year = release_year, addedby =addedby, director_id= director_id))
     else:
         raise Exception('this cannot happen')
     
