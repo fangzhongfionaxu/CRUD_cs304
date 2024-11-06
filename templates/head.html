@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang='en'>
+<head>
+    <meta charset='utf-8'>
+    <!-- for mobile-friendly pages -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name=author content="">
+    <title>{{ page_title }}</title>
+    <link rel='stylesheet' href="{{url_for('static', filename = 'style.css')}}">
+    {% block head_stuff %} {% endblock %}
+</head>
+<body>
+  <div id="navigation">
+    <ul>
+      <li><a href="/">Home</a>
+      <li><a href="/insert/">Insert A Movie</a>
+      <li><a href="/select/">Select from Incomplete Movies</a>
+    </ul>
+  </div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div id="messages">
+  {% for msg in messages %}
+  <p>{{msg}}</p>
+  {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+{% block main_content %}
+<body>
+  <h1>Welcome!</h1>
+  <p>On this site you can insert and update movie information into the database!</p>
+  </body>
+{% endblock %}
+  
+</body>
+</html>
