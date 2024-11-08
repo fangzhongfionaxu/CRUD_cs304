@@ -62,9 +62,9 @@ def insert():
         #else insert new movie to db
         
         
-        movie_id = request.form['movie-tt']
-        movie_title = request.form['movie-title']
-        release_year = request.form['movie-release']
+        movie_id = request.form.get('movie-tt')
+        movie_title = request.form.get('movie-title')
+        release_year = request.form.get('movie-release')
         print("test")
         print(movie_title)
         
@@ -99,7 +99,14 @@ def insert():
 def update(title, movie_id, release_year, addedby, director_id):
     # these forms go to the formecho route
     return render_template('update.html',
-                           page_title='Page with two Forms')
+                           
+                           movie_title = title,
+                           movie_id = movie_id,
+                           release_year = release_year,
+                           addedby = addedby,
+                           director_id = director_id,
+                           page_title='Page with two Forms'                   
+                           )
 
 
 if __name__ == '__main__':
