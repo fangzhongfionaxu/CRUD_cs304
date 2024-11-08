@@ -22,5 +22,7 @@ def insert_movie(conn, tt, title, year):
     curs.execute(sql_select, [tt])
     return curs.fetchone()
 
+def update(tt):
+    sql = 'select * from movie where tt = %s'
 
 

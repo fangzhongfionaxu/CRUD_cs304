@@ -70,13 +70,16 @@ def insert():
         
         #if the three variables are not none, then continue, 
         # if are, flash and return insert template
-        if movie_id =="" :
+
+        # should this be None or "" if I changed request.form to request.form.get
+        # why is the if statement not working
+        if movie_id == None :
             flash("missing input: movie_id")
-        if movie_title=="" :
+        if movie_title== None :
             flash("missing input: movie_title")
-        if release_year == "":
+        if release_year == None:
             flash("missing input: release_year")
-        if movie_id == "" or movie_title== ""or release_year == "":
+        if movie_id == None or movie_title== None or release_year == None:
             render_template('insert.html',
                                page_title='Insert movie')
 
@@ -88,23 +91,18 @@ def insert():
         addedby = result["addedby"]
         director_id = result["director"]
 
-        return redirect(url_for('update',title= title, movie_id = movie_id, release_year = release_year, addedby =addedby, director_id= director_id))
+        return redirect(url_for('update', tt = movie_id))
     else:
         raise Exception('this cannot happen')
     
 
 # This route shows how to render a page with a form on it.
 
-@app.route('/update/', methods=['GET','POST'])
-def update(title, movie_id, release_year, addedby, director_id):
+@app.route('/update/<int:tt>', methods=['GET','POST'])
+def update(tt):
     # these forms go to the formecho route
     return render_template('update.html',
-                           
-                           movie_title = title,
-                           movie_id = movie_id,
-                           release_year = release_year,
-                           addedby = addedby,
-                           director_id = director_id,
+                           movie_id = tt,
                            page_title='Page with two Forms'                   
                            )
 
