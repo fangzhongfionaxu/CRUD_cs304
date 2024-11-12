@@ -103,6 +103,7 @@ def update(tt):
     # these forms go to the formecho route
     return render_template('update.html',
                            movie_id = tt,
+                           director_name = director_name,
                            page_title='Page with two Forms'                   
                            )
 
