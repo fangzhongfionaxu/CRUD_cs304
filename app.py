@@ -66,21 +66,21 @@ def insert():
         movie_title = request.form.get('movie-title')
         release_year = request.form.get('movie-release')
         print("test")
-        print(movie_title)
+        print(movie_title + "123")
         
         #if the three variables are not none, then continue, 
         # if are, flash and return insert template
 
         # should this be None or "" if I changed request.form to request.form.get
         # why is the if statement not working
-        if movie_id == None :
+        if movie_id == "" :
             flash("missing input: movie_id")
-        if movie_title== None :
+        if movie_title== "" :
             flash("missing input: movie_title")
-        if release_year == None:
+        if release_year == "":
             flash("missing input: release_year")
-        if movie_id == None or movie_title== None or release_year == None:
-            render_template('insert.html',
+        if movie_id == "" or movie_title== "" or release_year == "":
+            return render_template('insert.html',
                                page_title='Insert movie')
 
         result = c.insert_movie(conn, movie_id, movie_title, release_year)
