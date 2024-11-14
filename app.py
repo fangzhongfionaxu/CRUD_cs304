@@ -56,23 +56,16 @@ def insert():
         return render_template('insert.html',
                                page_title='Insert movie')
     elif request.method == 'POST':
-        #i
-
-        #if tt exist in db, then flash
-        #else insert new movie to db
-        
         
         movie_id = request.form.get('movie-tt')
         movie_title = request.form.get('movie-title')
         release_year = request.form.get('movie-release')
-        print("test")
-        print(movie_title + "123")
+        director = None
+
         
         #if the three variables are not none, then continue, 
         # if are, flash and return insert template
 
-        # should this be None or "" if I changed request.form to request.form.get
-        # why is the if statement not working
         if movie_id == "" :
             flash("missing input: movie_id")
         if movie_title== "" :
@@ -83,29 +76,46 @@ def insert():
             return render_template('insert.html',
                                page_title='Insert movie')
 
-        result = c.insert_movie(conn, movie_id, movie_title, release_year)
-        #select * from movie where tt = movie_id
-        title = result["title"]
-        movie_id = result["tt"]
-        release_year = result["release"]
-        addedby = result["addedby"]
-        director_id = result["director"]
-
-        return redirect(url_for('update', tt = movie_id))
+        result = c.insert_movie(conn, movie_id, movie_title, release_year, director)
+        return redirect(url_for('update', tt = result))
     else:
         raise Exception('this cannot happen')
     
 
 # This route shows how to render a page with a form on it.
 
-@app.route('/update/<int:tt>', methods=['GET','POST'])
+@app.route('/update/<tt>', methods=['GET','POST'])
 def update(tt):
+    if request.method == 'GET':
+        result = c.update_render(tt)
+
     # these forms go to the formecho route
-    return render_template('update.html',
+        return render_template('update.html',
                            movie_id = tt,
-                           director_name = director_name,
+                           movie_title = result["title"],
+                           release_year = result["release"],
+                           added_by = result["addedby"],
+                           director = result["director"],
+                           director_name = result["name"],
                            page_title='Page with two Forms'                   
                            )
+    elif request.method == 'POST':
+        action = request.form.get('submit')
+        if action == "update":
+            movie_id = request.form.get('movie-tt')
+            movie_title = request.form.get('movie-title')
+            release_year = request.form.get('movie-release')
+            addedby = request.form.get('movie-addedby')
+            director = request.form.get('movie-director')
+            new_tt = c.update(tt, movie_id, movie_title, release_year, addedby, director)
+            return redirect(url_for('update', tt = new_tt))
+        else:
+            c.delete(tt)
+            return redirect(url_for('index'))
+
+    else:
+        raise Exception('This cannot happen')
+
 
 
 if __name__ == '__main__':
