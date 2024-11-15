@@ -2,13 +2,17 @@
 
 {% block main_content %}
 
-<h1>Greetings {{name}}</h1>
+<h1>Select Movie</h1>
 
-<form method="post" action="">
-    <p>Please tell us your <label for="username">
-            name: <input type="text" name="username">
-    </label></p>
-    <p><input type="submit"></p>
+<form method=POST action="{{ url_for('redirect_to_update') }}">
+    <label for="menu-tt">Movies without release dates or directors:</label>
+    <select id="menu-tt" name="menu-tt">
+        <option value="">Choose One</option>
+        {% for movie in result %}
+            <option value="{{ movie.tt }}">{{movie.title}}</option>
+        {% endfor %}
+    </select>
+    <input type="submit" name="submit-btn" value="Choose">
 </form>
 
 {% endblock %}

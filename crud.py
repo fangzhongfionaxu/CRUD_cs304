@@ -17,7 +17,6 @@ def insert_movie(conn, tt, title, year, director):
     else:
         sql = 'insert into movie (tt, title, `release`, director, addedby) values (%s,%s, %s, %s, %s)'
         curs.execute(sql,[tt, title, year, director, 10027])
-        # why isnt this working
         conn.commit()
     return tt
 
@@ -51,23 +50,25 @@ def update(tt, new_id, title, release, addedby, director):
 
 def update_helper(tt, title, release, addedby, director, old_id):
     curs.execute("select * from staff where uid = %s", addedby)
-    staff_exists = curs.fetchone()
-    if director != "" and staff_exists:
+
+    if director != "":
         sql = 'UPDATE movie SET title = %s, tt = %s, `release` = %s, addedby = %s, director = %s where tt = %s'            
         curs.execute(sql,[title, tt, release, addedby, director, old_id])
         conn.commit()
-    elif director != "" and not staff_exists:
-        flash("Staff does not exist")
-        sql = 'UPDATE movie SET title = %s, tt = %s, `release` = %s, director = %s where tt = %s'
-        curs.execute(sql,[title, tt, release, director, old_id])
-        conn.commit()
-    elif staff_exists:
+    else:
         sql = 'UPDATE movie SET title = %s, tt = %s, `release` = %s, addedby = %s where tt = %s'
         curs.execute(sql,[title, tt, release, addedby, old_id])
         conn.commit()
+
 def delete(tt):
     sql = 'delete from movie where tt = %s'  
     curs.execute(sql,tt)
     conn.commit()     
+
+def select_movie():
+    sql = 'SELECT tt, title FROM movie WHERE `release` IS NULL OR director IS NULL'
+    curs.execute(sql)
+    result = curs.fetchall()
+    return result
 
 

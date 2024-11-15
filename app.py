@@ -29,22 +29,11 @@ def index():
 # You will probably not need the routes below, but they are here
 # just in case. Please delete them if you are not using them
 
-@app.route('/select/', methods=["GET", "POST"])
+@app.route('/select/', methods=['GET','POST'])
 def select():
-    if request.method == 'GET':
-        return render_template('select.html',
-                               page_title='Form to collect username')
-    else:
-        try:
-            username = request.form['username'] # throws error if there's trouble
-            flash('form submission successful')
-            return render_template('greet.html',
-                                   page_title='Welcome '+username,
-                                   name=username)
-
-        except Exception as err:
-            flash('form submission error'+str(err))
-            return redirect( url_for('index') )
+    result = c.select_movie()
+    return render_template('select.html', result = result)
+    
 
 # This route displays all the data from the submitted form onto the rendered page
 # It's unlikely you will ever need anything like this in your own applications, so
@@ -101,6 +90,7 @@ def update(tt):
                            )
     elif request.method == 'POST':
         action = request.form.get('submit')
+        print(action)
         if action == "update":
             movie_id = request.form.get('movie-tt')
             movie_title = request.form.get('movie-title')
@@ -116,6 +106,18 @@ def update(tt):
     else:
         raise Exception('This cannot happen')
 
+#Why does this work when manually testing but not with script
+@app.route('/redirect_to_update/', methods=['POST'])
+def redirect_to_update():
+    new_tt = request.form.get('menu-tt')
+    print(new_tt)
+    if new_tt:
+        return redirect(url_for('update', tt = new_tt))
+    else:
+        flash('Please select a movie to update')
+        return redirect(url_for('select'))
+
+    
 
 
 if __name__ == '__main__':
@@ -127,7 +129,7 @@ if __name__ == '__main__':
     else:
         port = os.getuid()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'fx100_db' 
+    db_to_use = 'st107_db' 
     print(f'will connect to {db_to_use}')
     dbi.conf(db_to_use)
     app.debug = True
