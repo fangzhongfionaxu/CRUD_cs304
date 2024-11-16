@@ -12,8 +12,6 @@ import crud as c
 
 import secrets
 
-conn =dbi.connect()
-
 app.secret_key = 'your secret here'
 # replace that with a random key
 app.secret_key = secrets.token_hex()
@@ -31,8 +29,14 @@ def index():
 
 @app.route('/select/', methods=['GET','POST'])
 def select():
-    result = c.select_movie()
-    return render_template('select.html', result = result)
+    conn =dbi.connect()
+    if request.method == 'GET':
+        result = c.select_movie(conn)
+        return render_template('select.html', result = result)
+    else:
+        movie_id = request.form.get('menu-tt')
+        return redirect(url_for('update', tt = movie_id))
+
     
 
 # This route displays all the data from the submitted form onto the rendered page
@@ -41,6 +45,7 @@ def select():
 
 @app.route('/insert/', methods=['GET','POST'])
 def insert():
+    conn =dbi.connect()
     if request.method == 'GET':
         return render_template('insert.html',
                                page_title='Insert movie')
@@ -75,13 +80,15 @@ def insert():
 
 @app.route('/update/<tt>', methods=['GET','POST'])
 def update(tt):
+    conn = dbi.connect()
     if request.method == 'GET':
-        result = c.update_render(tt)
-
-    # these forms go to the formecho route
+        print("Made it back here")
+        result = c.update_render(conn,tt)
+        print(result)
+        print(tt)
         return render_template('update.html',
-                           movie_id = tt,
                            movie_title = result["title"],
+                           movie_id = tt,
                            release_year = result["release"],
                            added_by = result["addedby"],
                            director = result["director"],
@@ -89,18 +96,42 @@ def update(tt):
                            page_title='Page with two Forms'                   
                            )
     elif request.method == 'POST':
+        print("In post")
         action = request.form.get('submit')
-        print(action)
         if action == "update":
             movie_id = request.form.get('movie-tt')
             movie_title = request.form.get('movie-title')
             release_year = request.form.get('movie-release')
             addedby = request.form.get('movie-addedby')
             director = request.form.get('movie-director')
-            new_tt = c.update(tt, movie_id, movie_title, release_year, addedby, director)
-            return redirect(url_for('update', tt = new_tt))
+            result = c.update(conn,tt, movie_id, movie_title, release_year, addedby, director)
+            result2 = c.update_render(conn,tt)
+            print("Result in app.py")
+            print(result)
+            if result is None:
+                print("SHould come here")
+                return render_template('update.html',
+                           movie_id = movie_id,
+                           movie_title = movie_title,
+                           release_year = release_year,
+                           added_by = addedby,
+                           director = director,
+                           director_name = result2["name"],
+                           page_title='Page with two Forms'                   
+                           )
+            else:
+                return render_template('update.html',
+                           movie_id = result["tt"],
+                           movie_title = result["title"],
+                           release_year = result["release"],
+                           added_by = result["addedby"],
+                           director = result["director"],
+                           director_name = result2["name"],
+                           page_title='Page with two Forms'                   
+                           )
+            #return redirect(url_for('update', tt = result["tt"]))
         else:
-            c.delete(tt)
+            c.delete(conn,tt)
             return redirect(url_for('index'))
 
     else:
@@ -110,7 +141,6 @@ def update(tt):
 @app.route('/redirect_to_update/', methods=['POST'])
 def redirect_to_update():
     new_tt = request.form.get('menu-tt')
-    print(new_tt)
     if new_tt:
         return redirect(url_for('update', tt = new_tt))
     else:
