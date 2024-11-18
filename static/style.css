@@ -2,30 +2,60 @@
 */
 
 HTML {
-    --color-header: #007ea9;  /* color for H1-H6 and others. was deepskyblue but poor contrast. */
-    --color-hilite: #b50000;  /* was red, but this avoids WAVE contrast errors */ 
+    --color-header: #0d562c;  /* color for H1-H6 and others. was deepskyblue but poor contrast. */
+    --color-flash: #f60404;
+    --color-flashborder: #FFB6C1; /* was red, but this avoids WAVE contrast errors */ 
     --color-focus: #56B929;
-    --font-family: Verdana;
+    --font-family: Monaco;
+    --border-style: solid dotted dotted dotted;
     font-family: var(--font-family)
 }
 
 /* For flashed messages; make them stand out using red and italics */
 
-#messages {
-    color: var(--color-hilite);
+#messages p {
+    color: var(--color-flash);
     font-style: italic;
+    border-style: var(--border-style);
+    border-color: var(--color-flashborder); 
+    border-width: 1px;
 }
 
 
 h1 {
     font-size: 200%;
+    text-indent: 1em;
     color: var(--color-header);
+    border-style: var(--border-style);
 }
 
 h2, h3 {
     color: var(--color-header);
+
 }
     
+#navigation ul {
+    
+    border-style: var(--border-style);
+    border-color: gray; 
+    border-width: 1px;
+}
+#navigation ul li a{
+    color: rgb(71, 139, 97);
+}
+#navigation ul li {
+    color: rgb(71, 139, 97);
+    font-size: 14px;
+    font-style: italic;
+}
+
+
+[type = submit]{
+    border : var(--color-focus);
+    background-color: #bfdcb2;
+}
+
+
 
 /* for a simple navbar. Talk to Scott if you want drop-downs. */
 nav > ul {

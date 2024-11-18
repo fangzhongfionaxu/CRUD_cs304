@@ -59,7 +59,7 @@ def insert():
         
         #if the three variables are not none, then continue, 
         # if are, flash and return insert template
-
+        
         if movie_id == "" :
             flash("missing input: movie_id")
         if movie_title== "" :
@@ -159,7 +159,7 @@ if __name__ == '__main__':
     else:
         port = os.getuid()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'st107_db' 
+    db_to_use = 'fx100_db' 
     print(f'will connect to {db_to_use}')
     dbi.conf(db_to_use)
     app.debug = True
