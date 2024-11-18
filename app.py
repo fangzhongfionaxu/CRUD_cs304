@@ -24,9 +24,6 @@ def index():
     return render_template('head.html',
                            page_title='Main Page')
 
-# You will probably not need the routes below, but they are here
-# just in case. Please delete them if you are not using them
-
 @app.route('/select/', methods=['GET','POST'])
 def select():
     conn =dbi.connect()
@@ -38,10 +35,6 @@ def select():
         return redirect(url_for('update', tt = movie_id))
 
     
-
-# This route displays all the data from the submitted form onto the rendered page
-# It's unlikely you will ever need anything like this in your own applications, so
-# you should probably delete this handler
 
 @app.route('/insert/', methods=['GET','POST'])
 def insert():
@@ -55,10 +48,6 @@ def insert():
         movie_title = request.form.get('movie-title')
         release_year = request.form.get('movie-release')
         director = None
-
-        
-        #if the three variables are not none, then continue, 
-        # if are, flash and return insert template
         
         if movie_id == "" :
             flash("missing input: movie_id")
@@ -74,18 +63,12 @@ def insert():
         return redirect(url_for('update', tt = result))
     else:
         raise Exception('this cannot happen')
-    
-
-# This route shows how to render a page with a form on it.
 
 @app.route('/update/<tt>', methods=['GET','POST'])
 def update(tt):
     conn = dbi.connect()
     if request.method == 'GET':
-        print("Made it back here")
         result = c.update_render(conn,tt)
-        print(result)
-        print(tt)
         return render_template('update.html',
                            movie_title = result["title"],
                            movie_id = tt,
@@ -93,10 +76,9 @@ def update(tt):
                            added_by = result["addedby"],
                            director = result["director"],
                            director_name = result["name"],
-                           page_title='Page with two Forms'                   
+                           page_title='Update Page'                   
                            )
     elif request.method == 'POST':
-        print("In post")
         action = request.form.get('submit')
         if action == "update":
             movie_id = request.form.get('movie-tt')
@@ -106,10 +88,8 @@ def update(tt):
             director = request.form.get('movie-director')
             result = c.update(conn,tt, movie_id, movie_title, release_year, addedby, director)
             result2 = c.update_render(conn,tt)
-            print("Result in app.py")
-            print(result)
+  
             if result is None:
-                print("SHould come here")
                 return render_template('update.html',
                            movie_id = movie_id,
                            movie_title = movie_title,
@@ -117,7 +97,7 @@ def update(tt):
                            added_by = addedby,
                            director = director,
                            director_name = result2["name"],
-                           page_title='Page with two Forms'                   
+                           page_title='Update Page'                   
                            )
             else:
                 return render_template('update.html',
@@ -127,9 +107,8 @@ def update(tt):
                            added_by = result["addedby"],
                            director = result["director"],
                            director_name = result2["name"],
-                           page_title='Page with two Forms'                   
+                           page_title='Update Page'                   
                            )
-            #return redirect(url_for('update', tt = result["tt"]))
         else:
             c.delete(conn,tt)
             return redirect(url_for('index'))
@@ -137,7 +116,6 @@ def update(tt):
     else:
         raise Exception('This cannot happen')
 
-#Why does this work when manually testing but not with script
 @app.route('/redirect_to_update/', methods=['POST'])
 def redirect_to_update():
     new_tt = request.form.get('menu-tt')
@@ -159,7 +137,7 @@ if __name__ == '__main__':
     else:
         port = os.getuid()
     # set this local variable to 'wmdb' or your personal or team db
-    db_to_use = 'fx100_db' 
+    db_to_use = 'st107_db' 
     print(f'will connect to {db_to_use}')
     dbi.conf(db_to_use)
     app.debug = True
