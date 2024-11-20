@@ -5,15 +5,15 @@
   <p>Please fill out the following form to insert a movie into the database:</p>
   <h2>Insert Movie:</h2>
 
-  <form method=post action="/insert/">
+  <form method=post action="{{url_for('insert')}}">
     <fieldset>
     <legend>Movie Data</legend>
     <table>
-    <tr><td><label for="movie-tt" accesskey="i">(i) Movie ID/TT:</label></td>
+    <tr><td><label for="movie-tt">Movie ID/TT:</label></td>
         <td><input id="movie-tt" type="text" name="movie-tt"></td></tr>
-    <tr><td><label for="movie-title" accesskey="t">(t) Movie Title:</label></td>
+    <tr><td><label for="movie-title">Movie Title:</label></td>
         <td><input id="movie-title" type="text" name="movie-title"></td></tr>
-    <tr><td><label for="movie-release" accesskey="r">(r) Movie Release Year:</label></td>
+    <tr><td><label for="movie-release">Movie Release Year:</label></td>
         <td><input id="movie-release" type="text" name="movie-release"></td></tr>
     </table>
     </fieldset>

@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 import cs304dbi as dbi
 
 
-
+addedby = 10027
 def insert_movie(conn, tt, title, year, director):
     curs = dbi.dict_cursor(conn)
     sql = 'select * from movie where tt = %s'
@@ -15,7 +15,7 @@ def insert_movie(conn, tt, title, year, director):
         flash("Cannot insert movie, ID already exist in database")
     else:
         sql = 'insert into movie (tt, title, `release`, director, addedby) values (%s,%s, %s, %s, %s)'
-        curs.execute(sql,[tt, title, year, director, 10027])
+        curs.execute(sql,[tt, title, year, director, addedby])
         conn.commit()
     return tt
 
@@ -42,7 +42,7 @@ def update(conn, tt, new_id, title, release, addedby, director):
         curs.execute(sql, [new_id])        
         result = curs.fetchone()
         if result:
-            flash("Movie id already in use")
+            flash('Movie already exists')
             return None
         else:
             update_helper(conn, new_id, title, release, addedby, director, tt)
@@ -56,7 +56,7 @@ def update(conn, tt, new_id, title, release, addedby, director):
 
 def update_helper(conn, tt, title, release, addedby, director, old_id):
     curs = dbi.dict_cursor(conn)
-    if director != "":
+    if director != "" and director != "None":
         sql = 'UPDATE movie SET title = %s, tt = %s, `release` = %s, addedby = %s, director = %s where tt = %s'            
         curs.execute(sql,[title, tt, release, addedby, director, old_id])
         conn.commit()

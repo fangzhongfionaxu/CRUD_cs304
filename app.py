@@ -3,12 +3,9 @@ from flask import (Flask, render_template, make_response, url_for, request,
 from werkzeug.utils import secure_filename
 app = Flask(__name__)
 
-# one or the other of these. Defaults to MySQL (PyMySQL)
-# change comment characters to switch to SQLite
 
 import cs304dbi as dbi
 import crud as c
-# import cs304dbi_sqlite3 as dbi
 
 import secrets
 
@@ -87,46 +84,39 @@ def update(tt):
             addedby = request.form.get('movie-addedby')
             director = request.form.get('movie-director')
             result = c.update(conn,tt, movie_id, movie_title, release_year, addedby, director)
-            result2 = c.update_render(conn,tt)
-  
+
             if result is None:
+                result2 = c.update_render(conn, tt)
                 return render_template('update.html',
-                           movie_id = movie_id,
-                           movie_title = movie_title,
-                           release_year = release_year,
-                           added_by = addedby,
-                           director = director,
+                           movie_id = result2["tt"],
+                           movie_title = result2["title"],
+                           release_year = result2["release"],
+                           added_by = result2["addedby"],
+                           director = result2["director"],
                            director_name = result2["name"],
                            page_title='Update Page'                   
                            )
             else:
-                return render_template('update.html',
-                           movie_id = result["tt"],
-                           movie_title = result["title"],
-                           release_year = result["release"],
-                           added_by = result["addedby"],
-                           director = result["director"],
-                           director_name = result2["name"],
-                           page_title='Update Page'                   
-                           )
+                result2 = c.update_render(conn, result["tt"])
+                if(int(tt) != int(result2["tt"])):
+                    return redirect(url_for('update', tt = result['tt']))
+                else:
+                    return render_template('update.html',
+                            movie_title = result["title"],
+                            movie_id = result["tt"],
+                            release_year = result["release"],
+                            added_by = result["addedby"],
+                            director = result["director"],
+                            director_name = result2["name"],
+                            page_title='Update Page'                   
+                            ) 
+                
         else:
             c.delete(conn,tt)
             return redirect(url_for('index'))
 
     else:
         raise Exception('This cannot happen')
-
-@app.route('/redirect_to_update/', methods=['POST'])
-def redirect_to_update():
-    new_tt = request.form.get('menu-tt')
-    if new_tt:
-        return redirect(url_for('update', tt = new_tt))
-    else:
-        flash('Please select a movie to update')
-        return redirect(url_for('select'))
-
-    
-
 
 if __name__ == '__main__':
     import sys, os
